@@ -15,11 +15,14 @@
 
 ####### Update
 
-# data = {'name': 'Vasiliy'}
-# data_info = read_data(series_collection, data)
-# id_ = data_info['_id']
+# id = preparing_id(series_collection, {'name': 'Vasiliy'})
+# update_data(series_collection, {'_id':id}, {'name':'Narek'})
 
-# update_data(series_collection, {'_id':id_}, {'name':'Narek'})
+####### Delete
+
+# id = preparing_id(series_collection, {'name': 'Narek'})
+# delete_data(series_collection, {'_id': id})
+
 
 from pymongo import MongoClient
 import settings
@@ -30,6 +33,11 @@ client = MongoClient(host, port)
 
 db = client['seriesdb']
 series_collection = db['users']
+
+def preparing_id(collection, data):
+    data_info = read_data(collection, data)
+    id_ = data_info['_id']
+    return id_
 
 def create_data(collection, data):
     return collection.insert_one(data).inserted_id
@@ -45,5 +53,4 @@ def update_data(collection, query_data, updated_values):
     collection.update_one(query_data, {'$set': updated_values})
 
 def delete_data(collection, data):
-    pass
-
+    collection.delete_one(data)
